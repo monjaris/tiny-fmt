@@ -59,14 +59,14 @@ add_ldflags(table.unpack(ld_flags))
 
 
 --- TARGETS
-target("fmt")
+target("furmat")
     set_kind("shared")
 
-    add_files("src/format.cc")
+    add_files("src/format.cpp")
 
     add_defines("FMT_SHARED")
     add_defines("FMT_LIB_EXPORT")
 
 
 --- TESTS
-target("main") add_files("test/main.cpp") add_deps("fmt")
+target("main") add_files("test/main.cpp") add_deps("furmat")
