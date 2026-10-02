@@ -2,5 +2,5 @@
 
 int main()
 {
-    fmt::print("erfe");
+    fmt::println("Hello, World!");
 }
