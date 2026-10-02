@@ -1,4 +1,4 @@
-#include "fmt/core.h"
+#include "furmat/furmat.hpp"
 
 int main()
 {

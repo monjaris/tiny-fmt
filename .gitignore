@@ -2,6 +2,7 @@
 /.cache/
 /build/
 
+/main
 *.out
 *.a
 *.so*
