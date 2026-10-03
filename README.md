@@ -49,7 +49,7 @@ See the [documentation](https://fmt.dev) for more details.
 #include <tiny-fmt/tfmt.hpp>
 
 int main() {
-  tfmt::print("Hello, world!\n");
+  tfmt::println("Hello, World!");
 }
 ```
 
@@ -64,32 +64,16 @@ std::string s = tfmt::format("The answer is {}.", 42);
 ([run](https://godbolt.org/z/Yn7Txe))
 
 ``` c++
-std::string s = tfmt::format("I'd rather be {1} than {0}.", "right", "happy");
-// s == "I'd rather be happy than right."
+std::string s = tfmt::format("I'd rather be {1} than {0}.", "light-weight", "feature-bloat");
+// s == "I'd rather be light-weight than feature-bloat."
 ```
 
-**Print dates and times** ([run](https://godbolt.org/z/c31ExdY3W))
-
-``` c++
-#include <fmt/chrono.h>
-
-int main() {
-  auto now = std::chrono::system_clock::now();
-  tfmt::print("Date and time: {}\n", now);
-  tfmt::print("Time: {:%H:%M}\n", now);
-}
-```
-
-Output:
-
-    Date and time: 2023-12-26 19:10:31.557195597
-    Time: 19:10
 
 **Print a container** ([run](https://godbolt.org/z/MxM1YqjE7))
 
 ``` c++
 #include <vector>
-#include <fmt/ranges.h>
+#include <tiny-fmt/tfmt.hpp>
 
 int main() {
   std::vector<int> v = {1, 2, 3};
@@ -110,16 +94,6 @@ std::string s = tfmt::format("{:d}", "I am not a number");
 This gives a compile-time error in C++20 because `d` is an invalid
 format specifier for a string.
 
-**Write a file from a single thread**
-
-``` c++
-#include <fmt/os.h>
-
-int main() {
-  auto out = tfmt::output_file("guide.txt");
-  out.print("Don't {}", "Panic");
-}
-```
 
 This can be [up to 9 times faster than `fprintf`](
 https://vitaut.net/posts/2020/optimal-file-buffer-size/).
@@ -127,7 +101,7 @@ https://vitaut.net/posts/2020/optimal-file-buffer-size/).
 **Print with colors and text styles**
 
 ``` c++
-#include <fmt/color.h>
+#include <tiny-fmt/colors.hpp>
 
 int main() {
   tfmt::print(fg(tfmt::color::crimson) | tfmt::emphasis::bold,
@@ -139,86 +113,18 @@ int main() {
 }
 ```
 
-Output on a modern terminal with Unicode support:
-
-![image](https://github.com/fmtlib/fmt/assets/576385/2a93c904-d6fa-4aa6-b453-2618e1c327d7)
 
 # Performance
 
-{fmt} can be tens of percent to 20–30 times faster than `sprintf` and
+tfmt can be tens of percent to 20–30 times faster than `sprintf` and
 iostreams, especially for numeric formatting. It minimizes dynamic memory
 allocations and can optionally [compile format strings](
 https://fmt.dev/latest/api/#compile-api) into efficient formatting code.
 
-See [format-benchmark](https://github.com/fmtlib/format-benchmark) and
-[dtoa-benchmark](https://github.com/fmtlib/dtoa-benchmark) for benchmarks
-and methodology.
-
-**Time per double (smaller is better):**
-
-[![Time per double for floating-point formatting methods](
-https://github.com/user-attachments/assets/3678bc4a-9405-489e-8ce1-ca702829cdaa)](
-https://github.com/fmtlib/dtoa-benchmark)
 
 `ostringstream` and `sprintf` are omitted because they are an order of
 magnitude slower than the other methods.
 
-## Compile time and code bloat
 
-The script [bloat-test.py][test] from [format-benchmark][bench] measures the
-compile-time and code-size overhead each formatting method adds to application
-code. It generates 100 translation units and uses `printf` or its alternative
-five times in each to simulate a medium-sized project. Library and module build
-costs are excluded. Results on an Apple M5 Max running macOS 26.6.2 with
-Apple Clang 21.0.0 (clang-2100.1.1.101), taking the best of three runs, are
-shown in the following tables.
-
-[test]: https://github.com/fmtlib/format-benchmark/blob/master/bloat-test.py
-[bench]: https://github.com/fmtlib/format-benchmark
-
-**Optimized build (-O3)**
-
-| Method             | Compile time, s | Binary size, KiB | Stripped size, KiB |
-|--------------------|----------------:|-----------------:|-------------------:|
-| printf             |             1.6 |               54 |                 50 |
-| IOStreams          |            25.5 |               98 |                 84 |
-| fmt 12.2 (headers) |             5.1 |               54 |                 50 |
-| fmt 12.2 (module)  |             3.7 |               59 |                 50 |
-| Boost Format 1.92  |            49.1 |              517 |                317 |
-
-Using modular {fmt} reduces optimized application-code compile time by 27%
-without changing the reported stripped binary size.
-
-**Non-optimized build**
-
-| Method             | Compile time, s | Binary size, KiB | Stripped size, KiB |
-|--------------------|----------------:|-----------------:|-------------------:|
-| printf             |             1.6 |               54 |                 50 |
-| IOStreams          |            26.0 |               88 |                 68 |
-| fmt 12.2 (headers) |             4.9 |               87 |                 84 |
-| fmt 12.2 (module)  |             3.2 |               77 |                 68 |
-| Boost Format 1.92  |            35.7 |              741 |                431 |
-
-`libc`, `libc++`, `libfmt`, and `libfmt-module` were linked as shared libraries
-to compare formatting function overhead only. Boost Format is header-only.
-
-# Projects using {fmt}
-
-Notable users include:
-
-- [Apple's FoundationDB](https://github.com/apple/foundationdb)
-- [Blizzard Battle.net](https://battle.net/)
-- [Ceph](https://ceph.com/)
-- [ClickHouse](https://github.com/ClickHouse/ClickHouse)
-- [Envoy](https://github.com/envoyproxy/envoy)
-- [Folly](https://github.com/facebook/folly)
-- [MariaDB](https://mariadb.org/)
-- [MongoDB](https://mongodb.com/)
-- [PyTorch](https://github.com/pytorch/pytorch)
-- [Quill](https://github.com/odygrd/quill)
-- [Seastar](https://seastar.io/)
-- [spdlog](https://github.com/gabime/spdlog)
-- [Windows Terminal](https://github.com/microsoft/terminal)
-
-[Find more projects using {fmt} on GitHub](
-https://github.com/search?q=fmtlib&type=Code).
+# Projects already using tfmt
+*vexa* - https://github.com/monjaris/vexa

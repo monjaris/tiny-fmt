@@ -1707,7 +1707,7 @@ class format_string_checker {
     int arg_index = 0, named_arg_index = 0;
     TFMT_APPLY_VARIADIC(
         init_static_named_arg<T>(named_args_, arg_index, named_arg_index));
-    ignore_unused(arg_index, named_arg_index);
+    // ignore_unused(arg_index, named_arg_index);
   }
 
   TFMT_CONSTEXPR void on_text(const Char*, const Char*) {}
@@ -2698,8 +2698,10 @@ template <typename... T> struct fstring {
   static constexpr int num_static_named_args =
       detail::count_static_named_args<T...>();
 
+  static constexpr int num_args = sizeof...(T);
+
   using checker = detail::format_string_checker<
-      char, int(sizeof...(T)), num_static_named_args,
+      char, num_args, num_static_named_args,
       num_static_named_args != detail::count_named_args<T...>()>;
 
   using arg_pack = detail::arg_pack<T...>;
@@ -2946,6 +2948,12 @@ template <typename... T>
 TFMT_INLINE void println(format_string<T...> fmt, T&&... args) {
   tfmt::println(stdout, fmt, static_cast<T&&>(args)...);
 }
+
+
+
+
+using usize = std::size_t;
+using isize = std::ptrdiff_t;
 
 TFMT_PRAGMA_GCC(pop_options)
 TFMT_PRAGMA_MSVC(warning(pop))

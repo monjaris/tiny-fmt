@@ -24,16 +24,15 @@ set_toolchains(".llvm")
 --- SCRIPT-BEGIN
     if is_mode("debug") then
         optimize = "-O0"
-        lto = "-fno-lto"
         emit_stack = "-fno-omit-frame-pointer"
         set_symbols("debug")
         set_strip("none")
     elseif is_mode("release") then
         optimize = "-O3"
-        lto = "-flto"
         emit_stack = ""
         set_symbols("none")
         set_strip("all")
+        set_policy("build.optimization.lto", true)
     end
 --- SCRIPT-END
 
@@ -42,10 +41,10 @@ set_toolchains(".llvm")
 cxx_flags = {
     optimize,
     "-Wall", "-Wextra", "-Wshadow", "-Wundef", "-Wcast-align", "-Wdouble-promotion",
-    lto, emit_stack, "-fno-exceptions", "-fno-rtti"
+    emit_stack, "-fno-exceptions", "-fno-rtti",
 }
 ld_flags = {
-    lto
+    ""
 }
 set_languages("c++23")
 add_includedirs("include/")
@@ -61,8 +60,9 @@ target("tiny-fmt")
     add_files("src/format.cpp")
 
     add_defines("TFMT_SHARED")
-    add_defines("TFMT_LIB_EXPORT")
+    -- add_defines("TFMT_LIB_EXPORT")
 
 
 --- TESTS
 target("main") add_files("test/main.cpp") add_deps("tiny-fmt")
+target("format") add_files("test/format.cpp") add_deps("tiny-fmt")
