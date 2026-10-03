@@ -38,10 +38,6 @@ set_toolchains(".llvm")
 --- SCRIPT-END
 
 
---- DEPENDENCIES
--- add_requires("", {system = true})
-
-
 --- CONFIG
 cxx_flags = {
     optimize,
@@ -57,16 +53,16 @@ add_cxxflags(table.unpack(cxx_flags))
 add_ldflags(table.unpack(ld_flags))
 
 
-
 --- TARGETS
-target("furmat")
+target("tiny-fmt")
     set_kind("shared")
+    set_basename("tinyfmt")
 
     add_files("src/format.cpp")
 
-    add_defines("FMT_SHARED")
-    add_defines("FMT_LIB_EXPORT")
+    add_defines("TFMT_SHARED")
+    add_defines("TFMT_LIB_EXPORT")
 
 
 --- TESTS
-target("main") add_files("test/main.cpp") add_deps("furmat")
+target("main") add_files("test/main.cpp") add_deps("tiny-fmt")

@@ -1,6 +1,6 @@
-#include "furmat/furmat.hpp"
+#include "tinyfmt/tfmt.hpp"
 
 int main()
 {
-    fmt::println("Hello, World!");
+    tfmt::println("Hello, World!");
 }

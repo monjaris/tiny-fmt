@@ -17,11 +17,11 @@ hide:
   compile time</b>. For example:
 
   <pre><code class="language-cpp"
-  >fmt::format("{:d}", "I am not a number");</code></pre>
+  >tfmt::format("{:d}", "I am not a number");</code></pre>
 
   will give a compile-time error because <code>d</code> is not a valid
   format specifier for strings. APIs like <a href="api/#format">
-  <code>fmt::format</code></a> <b>prevent buffer overflow errors</b> via
+  <code>tfmt::format</code></a> <b>prevent buffer overflow errors</b> via
   automatic memory management.
 </p>
 <a href="api#compile-time-checks">→ Learn more</a>
@@ -34,7 +34,7 @@ hide:
   and times is <b>supported out-of-the-box</b>. For example:
   
   <pre><code class="language-cpp"
-  >fmt::print("{}", std::vector{1, 2, 3});</code></pre>
+  >tfmt::print("{}", std::vector{1, 2, 3});</code></pre>
 
   prints the vector in a JSON-like format:
 
@@ -68,7 +68,7 @@ hide:
   with UTF-8 and <code>char</code> strings. For example:
 
   <pre><code class="language-cpp"
-  >fmt::print("Слава Україні!");</code></pre>
+  >tfmt::print("Слава Україні!");</code></pre>
 
   will be printed correctly on Linux, macOS, and even Windows console,
   irrespective of the codepages.
@@ -102,7 +102,7 @@ hide:
 <h2>Small binary footprint</h2>
 <p>
   Type erasure is also used to prevent template bloat, resulting in <b>compact
-  per-call binary code</b>. For example, a call to <code>fmt::print</code> with
+  per-call binary code</b>. For example, a call to <code>tfmt::print</code> with
   a single argument is just <a href="https://godbolt.org/g/TZU4KF">a few
   instructions</a>, comparable to <code>printf</code> despite adding
   runtime safety, and much smaller than the equivalent iostreams code.

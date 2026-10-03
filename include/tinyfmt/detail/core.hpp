@@ -267,7 +267,7 @@ FMT_PRAGMA_MSVC(warning(disable : 4702))
 
 #ifndef FMT_BEGIN_NAMESPACE
 #  define FMT_BEGIN_NAMESPACE \
-    namespace fmt {           \
+    namespace tfmt {           \
     inline namespace v12 {
 #  define FMT_END_NAMESPACE \
     }                       \
@@ -356,7 +356,7 @@ struct monostate {
 #ifdef FMT_DOC
 #  define FMT_ENABLE_IF(...)
 #else
-#  define FMT_ENABLE_IF(...) fmt::enable_if_t<(__VA_ARGS__), int> = 0
+#  define FMT_ENABLE_IF(...) tfmt::enable_if_t<(__VA_ARGS__), int> = 0
 #endif
 
 template <typename T> constexpr auto min_of(T a, T b) -> T {
@@ -396,12 +396,12 @@ constexpr auto is_constant_evaluated(bool default_value = false) noexcept
 #elif defined(NDEBUG)
 // FMT_ASSERT is not empty to avoid -Wempty-body.
 #  define FMT_ASSERT(condition, message) \
-    fmt::detail::ignore_unused((condition), (message))
+    tfmt::detail::ignore_unused((condition), (message))
 #else
 #  define FMT_ASSERT(condition, message)                                    \
     ((condition) /* void() fails with -Winvalid-constexpr on clang 4.0.1 */ \
          ? (void)0                                                          \
-         : ::fmt::assert_fail(__FILE__, __LINE__, (message)))
+         : ::tfmt::assert_fail(__FILE__, __LINE__, (message)))
 #endif
 
 #ifdef FMT_USE_INT128
@@ -513,7 +513,7 @@ FMT_BEGIN_EXPORT
 
 /**
  * An implementation of `std::basic_string_view` for pre-C++17 providing a
- * subset of the API. `fmt::basic_string_view` is used in the public API even
+ * subset of the API. `tfmt::basic_string_view` is used in the public API even
  * if `std::basic_string_view` is available to prevent issues when a library is
  * compiled with a different `-std` option than the client code (which is not
  * recommended).
@@ -737,9 +737,9 @@ class basic_specs {
   }
 
   constexpr auto align() const -> align {
-    return static_cast<fmt::align>((data_ & align_mask) >> align_shift);
+    return static_cast<tfmt::align>((data_ & align_mask) >> align_shift);
   }
-  FMT_CONSTEXPR void set_align(fmt::align a) {
+  FMT_CONSTEXPR void set_align(tfmt::align a) {
     data_ = (data_ & ~align_mask) | (unsigned(a) << align_shift);
   }
 
@@ -763,9 +763,9 @@ class basic_specs {
   }
 
   constexpr auto sign() const -> sign {
-    return static_cast<fmt::sign>((data_ & sign_mask) >> sign_shift);
+    return static_cast<tfmt::sign>((data_ & sign_mask) >> sign_shift);
   }
-  FMT_CONSTEXPR void set_sign(fmt::sign s) {
+  FMT_CONSTEXPR void set_sign(tfmt::sign s) {
     data_ = (data_ & ~sign_mask) | (unsigned(s) << sign_shift);
   }
 
@@ -939,7 +939,7 @@ template <> struct is_code_unit<char32_t> : std::true_type {};
 template <> struct is_code_unit<char8_t> : bool_constant<is_utf8_enabled> {};
 #endif
 
-// Constructs fmt::basic_string_view<Char> from types implicitly convertible
+// Constructs tfmt::basic_string_view<Char> from types implicitly convertible
 // to it, deducing Char. Explicitly convertible types such as the ones returned
 // from FMT_STRING are intentionally excluded.
 template <typename Char, FMT_ENABLE_IF(is_code_unit<Char>::value)>
@@ -2541,8 +2541,8 @@ template <typename Context> class basic_format_arg {
  * should only be used as a parameter type in type-erased functions such as
  * `vformat`:
  *
- *     void vlog(fmt::string_view fmt, fmt::format_args args);  // OK
- *     fmt::format_args args = fmt::make_format_args();  // Dangling reference
+ *     void vlog(tfmt::string_view fmt, tfmt::format_args args);  // OK
+ *     tfmt::format_args args = tfmt::make_format_args();  // Dangling reference
  */
 template <typename Context> class basic_format_args {
  private:
@@ -2689,7 +2689,7 @@ template <typename Char = char> struct runtime_format_string {
  * **Example**:
  *
  *     // Check format string at runtime instead of compile-time.
- *     fmt::print(fmt::runtime("{:d}"), "I am not a number");
+ *     tfmt::print(tfmt::runtime("{:d}"), "I am not a number");
  */
 inline auto runtime(string_view s) -> runtime_format_string<> { return {{s}}; }
 
@@ -2791,9 +2791,9 @@ using vargs =
  *
  * **Example**:
  *
- *     fmt::print("The answer is {answer}.", fmt::arg("answer", 42));
+ *     tfmt::print("The answer is {answer}.", tfmt::arg("answer", 42));
  *
- * Named arguments passed with `fmt::arg` are not supported
+ * Named arguments passed with `tfmt::arg` are not supported
  * in compile-time checks, but `"answer"_a=42` are compile-time checked in
  * sufficiently new compilers. See `operator""_a()`.
  */
@@ -2822,7 +2822,7 @@ auto vformat_to(OutputIt&& out, string_view fmt, format_args args)
  * **Example**:
  *
  *     auto out = std::vector<char>();
- *     fmt::format_to(std::back_inserter(out), "{}", 42);
+ *     tfmt::format_to(std::back_inserter(out), "{}", 42);
  */
 template <typename OutputIt, typename... T,
           FMT_ENABLE_IF(detail::is_output_iterator<remove_cvref_t<OutputIt>,
@@ -2905,7 +2905,7 @@ FMT_API void vprint_buffered(FILE* f, string_view fmt, format_args args);
  *
  * **Example**:
  *
- *     fmt::print("The answer is {}.", 42);
+ *     tfmt::print("The answer is {}.", 42);
  */
 template <typename... T>
 FMT_INLINE void print(format_string<T...> fmt, T&&... args) {
@@ -2922,7 +2922,7 @@ FMT_INLINE void print(format_string<T...> fmt, T&&... args) {
  *
  * **Example**:
  *
- *     fmt::print(stderr, "Don't {}!", "panic");
+ *     tfmt::print(stderr, "Don't {}!", "panic");
  */
 template <typename... T>
 FMT_INLINE void print(FILE* f, format_string<T...> fmt, T&&... args) {
@@ -2946,7 +2946,7 @@ FMT_INLINE void println(FILE* f, format_string<T...> fmt, T&&... args) {
 /// to `stdout` followed by a newline.
 template <typename... T>
 FMT_INLINE void println(format_string<T...> fmt, T&&... args) {
-  fmt::println(stdout, fmt, static_cast<T&&>(args)...);
+  tfmt::println(stdout, fmt, static_cast<T&&>(args)...);
 }
 
 FMT_PRAGMA_GCC(pop_options)
@@ -2954,7 +2954,7 @@ FMT_PRAGMA_MSVC(warning(pop))
 FMT_END_EXPORT
 FMT_END_NAMESPACE
 
-// Using fmt::format via fmt/core.h has been deprecated since version 11
+// Using tfmt::format via fmt/core.h has been deprecated since version 11
 // and now requires an explicit opt in.
 #if defined(FMT_HEADER_ONLY) || defined(FMT_DEPRECATED_HEAVY_CORE)
 #  include "format.h"

@@ -282,14 +282,14 @@ class CxxHandler(BaseHandler):
             MACRO_EXPANSION  = YES
             PREDEFINED       = _WIN32=1 \
                                __linux__=1 \
-                               FMT_ENABLE_IF(...)= \
-                               FMT_USE_USER_LITERALS=1 \
-                               FMT_USE_ALIAS_TEMPLATES=1 \
-                               FMT_USE_NONTYPE_TEMPLATE_ARGS=1 \
-                               FMT_API= \
-                               "FMT_BEGIN_NAMESPACE=namespace fmt {{" \
-                               "FMT_END_NAMESPACE=}}" \
-                               "FMT_DOC=1"
+                               TFMT_ENABLE_IF(...)= \
+                               TFMT_USE_USER_LITERALS=1 \
+                               TFMT_USE_ALIAS_TEMPLATES=1 \
+                               TFMT_USE_NONTYPE_TEMPLATE_ARGS=1 \
+                               TFMT_API= \
+                               "TFMT_BEGIN_NAMESPACE=namespace fmt {{" \
+                               "TFMT_END_NAMESPACE=}}" \
+                               "TFMT_DOC=1"
             """.format(
                 " ".join([os.path.join(include_dir, h) for h in headers]),
                 self._doxyxml_dir,
@@ -355,7 +355,7 @@ class CxxHandler(BaseHandler):
 
     @override
     def collect(self, identifier: str, options: "Mapping[str, Any]") -> Definition:
-        qual_name = "fmt::" + identifier
+        qual_name = "tfmt::" + identifier
 
         param_str = None
         paren = qual_name.find("(")

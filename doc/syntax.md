@@ -1,7 +1,7 @@
 # Format String Syntax
 
 The formatting functions in this library — most notably
-[`fmt::format`](api.md#format) and [`fmt::print`](api.md#print) — accept
+[`tfmt::format`](api.md#format) and [`tfmt::print`](api.md#print) — accept
 format strings written in the syntax described here.
 
 A format string is plain text with embedded *replacement fields* delimited by
@@ -25,7 +25,7 @@ id_continue       ::= id_start | digit</code>
 
 An *arg_id* selects which argument to format. It may be a non-negative
 integer (positional reference) or an identifier matching the name of an
-argument passed via [`fmt::arg`](api.md#arg) (named reference). When *arg_id*
+argument passed via [`tfmt::arg`](api.md#arg) (named reference). When *arg_id*
 is omitted, arguments are consumed in left-to-right order; this *automatic*
 indexing must be used uniformly throughout the format string — mixing
 automatic and explicit numeric ids is a compile-time error (or a
@@ -38,14 +38,14 @@ built-in types is documented in the next section.
 For example:
 
 ```c++
-fmt::format("hello, {}", "world");
+tfmt::format("hello, {}", "world");
 // Result: "hello, world"
 
-fmt::format("{1}, {0}!", "world", "hello");
+tfmt::format("{1}, {0}!", "world", "hello");
 // Result: "hello, world!"
 
-fmt::format("{greeting}, {name}!",
-            fmt::arg("greeting", "hi"), fmt::arg("name", "fmt"));
+tfmt::format("{greeting}, {name}!",
+            tfmt::arg("greeting", "hi"), tfmt::arg("name", "fmt"));
 // Result: "hi, fmt!"
 ```
 
@@ -101,10 +101,10 @@ Alignment has no observable effect when the value's natural rendering is
 already at least as wide as *width*; the value is never truncated to fit.
 
 ```c++
-fmt::format("[{:<10}]", "42");   // Result: "[42        ]"
-fmt::format("[{:>10}]", "42");   // Result: "[        42]"
-fmt::format("[{:^10}]", "42");   // Result: "[    42    ]"
-fmt::format("[{:*^10}]", "42");  // Result: "[****42****]"  - '*' as fill
+tfmt::format("[{:<10}]", "42");   // Result: "[42        ]"
+tfmt::format("[{:>10}]", "42");   // Result: "[        42]"
+tfmt::format("[{:^10}]", "42");   // Result: "[    42    ]"
+tfmt::format("[{:*^10}]", "42");  // Result: "[****42****]"  - '*' as fill
 ```
 
 ### Sign
@@ -121,8 +121,8 @@ applies to signed integer and floating-point types only.
 The sign of `-0.0` is preserved in floating-point output.
 
 ```c++
-fmt::format("{:+d} {:+d}", 7, -7);  // Result: "+7 -7"
-fmt::format("{: d} {: d}", 7, -7);  // Result: " 7 -7"
+tfmt::format("{:+d} {:+d}", 7, -7);  // Result: "+7 -7"
+tfmt::format("{: d} {: d}", 7, -7);  // Result: " 7 -7"
 ```
 
 ### Alternate form (`#`)
@@ -174,11 +174,11 @@ This keeps fixed *width* values visually consistent in monospace renderings
 that combine Latin and CJK text.
 
 ```c++
-fmt::format("[{:6}]", 42);
+tfmt::format("[{:6}]", 42);
 // Result: "[    42]"  - right-aligned by default
-fmt::format("[{:6}]", "hi");
+tfmt::format("[{:6}]", "hi");
 // Result: "[hi    ]"  - left-aligned by default
-fmt::format("[{:{}}]", 42, 6);
+tfmt::format("[{:{}}]", 42, 6);
 // Result: "[    42]"  - width from an argument
 ```
 
@@ -200,10 +200,10 @@ types. When a *precision* limits the number of characters taken from a C
 string, the string must still be null-terminated.
 
 ```c++
-fmt::format("{:.2f}", 3.14159);        // Result: "3.14"
-fmt::format("{:.3g}", 3.14159);        // Result: "3.14"
-fmt::format("{:.4}", "hello, world");  // Result: "hell"
-fmt::format("{:.{}f}", 3.14159, 4);
+tfmt::format("{:.2f}", 3.14159);        // Result: "3.14"
+tfmt::format("{:.3g}", 3.14159);        // Result: "3.14"
+tfmt::format("{:.4}", "hello, world");  // Result: "hell"
+tfmt::format("{:.{}f}", 3.14159, 4);
 // Result: "3.1416"  - precision from an argument
 ```
 
@@ -217,8 +217,8 @@ The flag has no effect on non-numeric types.
 
 ```c++
 auto loc = std::locale("en_US.UTF-8");
-fmt::format(loc, "{:L}", 1234567890);     // Result: "1,234,567,890"
-fmt::format(loc, "{:.2Lf}", 1234567.89);  // Result: "1,234,567.89"
+tfmt::format(loc, "{:L}", 1234567890);     // Result: "1,234,567,890"
+tfmt::format(loc, "{:.2Lf}", 1234567.89);  // Result: "1,234,567.89"
 ```
 
 ### Presentation type
@@ -240,10 +240,10 @@ grouped below by the value categories they apply to.
 | none | Same as `d` for integers, `c` for characters, and the textual form (`true`/`false`) for `bool`. |
 
 ```c++
-fmt::format("{:d} {:#x} {:#o} {:#b}", 42, 42, 42, 42);
+tfmt::format("{:d} {:#x} {:#o} {:#b}", 42, 42, 42, 42);
 // Result: "42 0x2a 052 0b101010"
 
-fmt::format("{:#06x}", 0xfe);  // # adds the prefix, 06 zero-pads to width 6
+tfmt::format("{:#06x}", 0xfe);  // # adds the prefix, 06 zero-pads to width 6
 // Result: "0x00fe"
 ```
 
@@ -271,8 +271,8 @@ fmt::format("{:#06x}", 0xfe);  // # adds the prefix, 06 zero-pads to width 6
 | none | Same as `s` for strings and `bool`, and as `c` for characters.      |
 
 ```c++
-fmt::format("{}",   "tab\there");  // Result contains a literal tab character.
-fmt::format("{:?}", "tab\there");  // Result: "\"tab\\there\""
+tfmt::format("{}",   "tab\there");  // Result contains a literal tab character.
+tfmt::format("{:?}", "tab\there");  // Result: "\"tab\\there\""
 ```
 
 **Pointers:**
@@ -616,7 +616,7 @@ t.tm_mday = 4;
 t.tm_hour = 12;
 t.tm_min = 15;
 t.tm_sec = 58;
-fmt::print("{:%Y-%m-%d %H:%M:%S}", t);
+tfmt::print("{:%Y-%m-%d %H:%M:%S}", t);
 // Prints: 2010-08-04 12:15:58
 ```
 
@@ -658,23 +658,23 @@ characters or strings are printed according to the provided specification.
 Examples:
 
 ```c++
-fmt::print("{}", std::vector{10, 20, 30});
+tfmt::print("{}", std::vector{10, 20, 30});
 // Output: [10, 20, 30]
-fmt::print("{::#x}", std::vector{10, 20, 30});
+tfmt::print("{::#x}", std::vector{10, 20, 30});
 // Output: [0xa, 0x14, 0x1e]
-fmt::print("{}", std::vector{'h', 'e', 'l', 'l', 'o'});
+tfmt::print("{}", std::vector{'h', 'e', 'l', 'l', 'o'});
 // Output: ['h', 'e', 'l', 'l', 'o']
-fmt::print("{:n}", std::vector{'h', 'e', 'l', 'l', 'o'});
+tfmt::print("{:n}", std::vector{'h', 'e', 'l', 'l', 'o'});
 // Output: 'h', 'e', 'l', 'l', 'o'
-fmt::print("{:s}", std::vector{'h', 'e', 'l', 'l', 'o'});
+tfmt::print("{:s}", std::vector{'h', 'e', 'l', 'l', 'o'});
 // Output: "hello"
-fmt::print("{:?s}", std::vector{'h', 'e', 'l', 'l', 'o', '\n'});
+tfmt::print("{:?s}", std::vector{'h', 'e', 'l', 'l', 'o', '\n'});
 // Output: "hello\n"
-fmt::print("{::}", std::vector{'h', 'e', 'l', 'l', 'o'});
+tfmt::print("{::}", std::vector{'h', 'e', 'l', 'l', 'o'});
 // Output: [h, e, l, l, o]
-fmt::print("{::d}", std::vector{'h', 'e', 'l', 'l', 'o'});
+tfmt::print("{::d}", std::vector{'h', 'e', 'l', 'l', 'o'});
 // Output: [104, 101, 108, 108, 111]
-fmt::print("{:n:f}", std::array{std::numbers::pi, std::numbers::e});
+tfmt::print("{:n:f}", std::array{std::numbers::pi, std::numbers::e});
 // Output: 3.141593, 2.718282
 ```
 
@@ -685,7 +685,7 @@ replacement fields, fill characters, and centering — to draw a fixed-width
 box around a message:
 
 ```c++
-fmt::print(
+tfmt::print(
     "┌{0:─^{2}}┐\n"
     "│{1: ^{2}}│\n"
     "└{0:─^{2}}┘\n", "", "Hello, world!", 20);

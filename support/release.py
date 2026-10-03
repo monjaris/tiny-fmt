@@ -5,7 +5,7 @@
 Usage:
   release.py [<branch>]
 
-For the release command $FMT_TOKEN should contain a GitHub personal access token
+For the release command $TFMT_TOKEN should contain a GitHub personal access token
 obtained from https://github.com/settings/tokens.
 """
 
@@ -197,8 +197,8 @@ if __name__ == '__main__':
     # build the source zip from the `release` branch and attach the zip plus
     # *.intoto.jsonl provenance to this draft. After reviewing the draft, the
     # maintainer clicks Publish to finalize.
-    fmt_repo.push('origin', 'release')
-    auth_headers = {'Authorization': 'token ' + os.getenv('FMT_TOKEN')}
+    Tfmt_repo.push('origin', 'release')
+    auth_headers = {'Authorization': 'token ' + os.getenv('TFMT_TOKEN')}
     req = urllib.request.Request(
         'https://api.github.com/repos/fmtlib/fmt/releases',
         data=json.dumps({'tag_name': version,
