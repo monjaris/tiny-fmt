@@ -4,7 +4,7 @@ The {fmt} library API consists of the following components:
 
 - [`fmt/core.h`](#core-api): the core API providing main formatting functions
   for `char`/UTF-8 with C++20 compile-time checks and minimal dependencies
-- [`fmt/format.h`](#format-api): `fmt::format` and other formatting functions
+- [`fmt/format.h`](#format-api): `tfmt::format` and other formatting functions
   as well as locale support
 - [`fmt/ranges.h`](#ranges-api): formatting of ranges and tuples
 - [`fmt/chrono.h`](#chrono-api): date and time formatting
@@ -19,7 +19,7 @@ The {fmt} library API consists of the following components:
 - [`fmt/xchar.h`](#xchar-api): optional `wchar_t` support
 
 All functions and types provided by the library reside in namespace `fmt`
-and macros have prefix `FMT_`.
+and macros have prefix `TFMT_`.
 
 ## C++ Module API
 
@@ -40,7 +40,7 @@ It also provides `formatter` specializations for the following types:
 - `float`, `double`, `long double`
 - `bool`
 - `char`
-- `const char*`, [`fmt::string_view`](#basic_string_view)
+- `const char*`, [`tfmt::string_view`](#basic_string_view)
 - `const void*`
 
 The following functions use [format string syntax](syntax.md) similar to that
@@ -49,10 +49,10 @@ in Python. They take *fmt* and *args* as arguments.
 
 *fmt* is a format string that contains literal text and replacement fields
 surrounded by braces `{}`. The fields are replaced with formatted arguments
-in the resulting string. [`fmt::format_string`](#format_string) is a format
+in the resulting string. [`tfmt::format_string`](#format_string) is a format
 string which can be implicitly constructed from a string literal or a
 `constexpr` string and is checked at compile time in C++20. To pass a runtime
-format string wrap it in [`fmt::runtime`](#runtime).
+format string wrap it in [`tfmt::runtime`](#runtime).
 
 *args* is an argument list representing objects to be formatted.
 
@@ -108,12 +108,12 @@ Example ([run](https://godbolt.org/z/nvME4arz8)):
       house_of_cards, american_beauty, se7en = 7
     };
 
-    auto format_as(film f) { return fmt::underlying(f); }
+    auto format_as(film f) { return tfmt::underlying(f); }
 
     }
 
     int main() {
-      fmt::print("{}\n", kevin_namespacy::film::se7en); // Output: 7
+      tfmt::print("{}\n", kevin_namespacy::film::se7en); // Output: 7
     }
 
 Using a specialization is more complex, but gives you full control over
@@ -131,7 +131,7 @@ format specifiers without implementing them yourself. For example:
 
 enum class color {red, green, blue};
 
-template <> struct fmt::formatter<color>: formatter<string_view> {
+template <> struct tfmt::formatter<color>: formatter<string_view> {
   // parse is inherited from formatter<string_view>.
 
   auto format(color c, format_context& ctx) const
@@ -144,7 +144,7 @@ template <> struct fmt::formatter<color>: formatter<string_view> {
 #include "color.h"
 #include <fmt/format.h>
 
-auto fmt::formatter<color>::format(color c, format_context& ctx) const
+auto tfmt::formatter<color>::format(color c, format_context& ctx) const
     -> format_context::iterator {
   string_view name = "unknown";
   switch (c) {
@@ -162,7 +162,7 @@ from `formatter<string_view>` it will recognize all string format
 specifications, for example
 
 ```c++
-fmt::format("{:>10}", color::blue)
+tfmt::format("{:>10}", color::blue)
 ```
 
 will return `"      blue"`.
@@ -179,14 +179,14 @@ For example:
     };
 
     template <>
-    struct fmt::formatter<point> : nested_formatter<double> {
+    struct tfmt::formatter<point> : nested_formatter<double> {
       auto format(point p, format_context& ctx) const {
         return write(ctx, "(", nested(p.x), ", ", nested(p.y), ")");
       }
     };
 
     int main() {
-      fmt::print("[{:>20.2f}]", point{1, 2});
+      tfmt::print("[{:>20.2f}]", point{1, 2});
     }
 
 prints:
@@ -199,14 +199,14 @@ elements. -->
 
 In general the formatter has the following form:
 
-    template <> struct fmt::formatter<T> {
+    template <> struct tfmt::formatter<T> {
       // Parses format specifiers and stores them in the formatter.
       //
       // [ctx.begin(), ctx.end()) is a, possibly empty, character range that
       // contains a part of the format string starting from the format
       // specifications to be parsed, e.g. in
       //
-      //   fmt::format("{:f} continued", ...);
+      //   tfmt::format("{:f} continued", ...);
       //
       // the range will contain "f} continued". The formatter should parse
       // specifiers until '}' or the end of the range. In this example the
@@ -242,8 +242,8 @@ struct B : A {
 };
 
 template <typename T>
-struct fmt::formatter<T, std::enable_if_t<std::is_base_of_v<A, T>, char>> :
-    fmt::formatter<std::string> {
+struct tfmt::formatter<T, std::enable_if_t<std::is_base_of_v<A, T>, char>> :
+    tfmt::formatter<std::string> {
   auto format(const A& a, format_context& ctx) const {
     return formatter<std::string>::format(a.name(), ctx);
   }
@@ -258,7 +258,7 @@ struct fmt::formatter<T, std::enable_if_t<std::is_base_of_v<A, T>, char>> :
 int main() {
   B b;
   A& a = b;
-  fmt::print("{}", a); // Output: B
+  tfmt::print("{}", a); // Output: B
 }
 ```
 
@@ -275,12 +275,12 @@ disallowed.
 
 Compile-time format string checks are enabled by default on compilers
 that support C++20 `consteval`. On older compilers you can use the
-[FMT_STRING](#legacy-checks) macro defined in `fmt/format.h` instead.
+[TFMT_STRING](#legacy-checks) macro defined in `fmt/format.h` instead.
 
 Unused arguments are allowed as in Python's `str.format` and ordinary functions.
 
 See [Type Erasure](#type-erasure) for an example of how to enable compile-time
-checks in your own functions with `fmt::format_string` while avoiding template
+checks in your own functions with `tfmt::format_string` while avoiding template
 bloat.
 
 ::: fstring
@@ -298,14 +298,14 @@ small binary footprint, for example ([run](https://godbolt.org/z/b9Pbasvzc)):
 #include <fmt/format.h>
 
 void vlog(const char* file, int line,
-          fmt::string_view fmt, fmt::format_args args) {
-  fmt::print("{}: {}: {}", file, line, fmt::vformat(fmt, args));
+          tfmt::string_view fmt, tfmt::format_args args) {
+              tfmt::print("{}: {}: {}", file, line, tfmt::vformat(fmt, args));
 }
 
 template <typename... T>
 void log(const char* file, int line,
-         fmt::format_string<T...> fmt, T&&... args) {
-  vlog(file, line, fmt, fmt::make_format_args(args...));
+         tfmt::format_string<T...> fmt, T&&... args) {
+             vlog(file, line, fmt, tfmt::make_format_args(args...));
 }
 
 #define MY_LOG(fmt, ...) log(__FILE__, __LINE__, fmt, __VA_ARGS__)
@@ -376,10 +376,10 @@ functions.
 
 The {fmt} library supports custom dynamic memory allocators. A custom
 allocator class can be specified as a template argument to
-[`fmt::basic_memory_buffer`](#basic_memory_buffer):
+[`tfmt::basic_memory_buffer`](#basic_memory_buffer):
 
     using custom_memory_buffer = 
-      fmt::basic_memory_buffer<char, fmt::inline_buffer_size, custom_allocator>;
+      tfmt::basic_memory_buffer<char, tfmt::inline_buffer_size, custom_allocator>;
 
 It is also possible to write a formatting function that uses a custom
 allocator:
@@ -387,17 +387,17 @@ allocator:
     using custom_string =
       std::basic_string<char, std::char_traits<char>, custom_allocator>;
 
-    auto vformat(custom_allocator alloc, fmt::string_view fmt,
-                 fmt::format_args args) -> custom_string {
+    auto vformat(custom_allocator alloc, tfmt::string_view fmt,
+                 tfmt::format_args args) -> custom_string {
       auto buf = custom_memory_buffer(alloc);
-      fmt::vformat_to(std::back_inserter(buf), fmt, args);
+      tfmt::vformat_to(std::back_inserter(buf), fmt, args);
       return custom_string(buf.data(), buf.size(), alloc);
     }
 
     template <typename ...Args>
-    auto format(custom_allocator alloc, fmt::string_view fmt,
+    auto format(custom_allocator alloc, tfmt::string_view fmt,
                 const Args& ... args) -> custom_string {
-      return vformat(alloc, fmt, fmt::make_format_args(args...));
+      return vformat(alloc, fmt, tfmt::make_format_args(args...));
     }
 
 The allocator will be used for the output container only. Formatting
@@ -415,7 +415,7 @@ locale:
     #include <locale>
 
     std::locale::global(std::locale("en_US.UTF-8"));
-    auto s = fmt::format("{:L}", 1000000);  // s == "1,000,000"
+    auto s = tfmt::format("{:L}", 1000000);  // s == "1,000,000"
 
 `fmt/format.h` provides the following overloads of formatting functions
 that take `std::locale` as a parameter. The locale type is a template
@@ -430,14 +430,14 @@ parameter to avoid the expensive `<locale>` include.
 <a id="legacy-checks"></a>
 ### Legacy Compile-Time Checks
 
-`FMT_STRING` enables compile-time checks on older compilers. It requires
+`TFMT_STRING` enables compile-time checks on older compilers. It requires
 C++14 or later and is a no-op in C++11.
 
-::: FMT_STRING
+::: TFMT_STRING
 
 To force the use of legacy compile-time checks, define the preprocessor
-variable `FMT_ENFORCE_COMPILE_STRING`. When set, functions accepting
-`FMT_STRING` will fail to compile with regular strings.
+variable `TFMT_ENFORCE_COMPILE_STRING`. When set, functions accepting
+`TFMT_STRING` will fail to compile with regular strings.
 
 <a id="ranges-api"></a>
 ## Range and Tuple Formatting
@@ -446,15 +446,15 @@ variable `FMT_ENFORCE_COMPILE_STRING`. When set, functions accepting
 
     #include <fmt/ranges.h>
 
-    fmt::print("{}", std::tuple<char, int>{'a', 42});
+    tfmt::print("{}", std::tuple<char, int>{'a', 42});
     // Output: ('a', 42)
 
-Using `fmt::join`, you can separate tuple elements with a custom separator:
+Using `tfmt::join`, you can separate tuple elements with a custom separator:
 
     #include <fmt/ranges.h>
 
     auto t = std::tuple<int, char>{1, 'a'};
-    fmt::print("{}", fmt::join(t, ", "));
+    tfmt::print("{}", tfmt::join(t, ", "));
     // Output: 1, a
 
 ::: join(Range&&, string_view)
@@ -483,16 +483,16 @@ chrono-format-spec).
     int main() {
       auto now = std::chrono::system_clock::now();
 
-      fmt::print("The date is {:%Y-%m-%d}.\n", now);
+      tfmt::print("The date is {:%Y-%m-%d}.\n", now);
       // Output: The date is 2020-11-07.
       // (with 2020-11-07 replaced by the current date)
 
       using namespace std::literals::chrono_literals;
 
-      fmt::print("Default format: {} {}\n", 42s, 100ms);
+      tfmt::print("Default format: {} {}\n", 42s, 100ms);
       // Output: Default format: 42s 100ms
 
-      fmt::print("strftime-like format: {:%H:%M:%S}\n", 3h + 15min + 30s);
+      tfmt::print("strftime-like format: {:%H:%M:%S}\n", 3h + 15min + 30s);
       // Output: strftime-like format: 03:15:30
     }
 
@@ -531,10 +531,10 @@ feature](https://en.cppreference.com/w/cpp/feature_test).
 
     #include <fmt/std.h>
 
-    fmt::print("{}", std::variant<char, float>('x'));
+    tfmt::print("{}", std::variant<char, float>('x'));
     // Output: variant('x')
 
-    fmt::print("{}", std::variant<std::monostate, char>());
+    tfmt::print("{}", std::variant<std::monostate, char>());
     // Output: variant(monostate)
 
 ## Bit-Fields and Packed Structs
@@ -549,7 +549,7 @@ struct smol {
 };
 
 auto s = smol();
-fmt::print("{}", +s.bit);
+tfmt::print("{}", +s.bit);
 ```
 
 This is a known limitation of "perfect" forwarding in C++.
@@ -558,20 +558,20 @@ This is a known limitation of "perfect" forwarding in C++.
 ## Enum Formatting
 
 `fmt/enum.h` provides formatting of enums annotated with
-`fmt::as_identifiers`. Such an enum is formatted as the identifier of the
+`tfmt::as_identifiers`. Such an enum is formatted as the identifier of the
 enumerator matching the formatted value:
 
     #include <fmt/enum.h>
 
-    enum class [[=fmt::as_identifiers]] color { red, green, blue };
+    enum class [[=tfmt::as_identifiers]] color { red, green, blue };
 
-    fmt::print("{}", color::green);
+    tfmt::print("{}", color::green);
     // Output: green
 
 Such enums are formatted using the string [Format Specification](
 syntax.md#format-specification), for example:
 
-    fmt::print("[{:>7}]", color::red);
+    tfmt::print("[{:>7}]", color::red);
     // Output: [    red]
 
 Identifiers are only available as `char` strings so annotated enums are not
@@ -581,20 +581,20 @@ If several enumerators have the same value, the first one in the order of
 declaration is used. A value that doesn't match any enumerator is represented
 as its underlying value in decimal before applying string formatting:
 
-    fmt::print("{}", static_cast<color>(42));
+    tfmt::print("{}", static_cast<color>(42));
     // Output: 42
 
-An enum annotated with `fmt::as_underlying` is instead formatted as its
+An enum annotated with `tfmt::as_underlying` is instead formatted as its
 underlying value using the integer [Format Specification](
 syntax.md#format-specification):
 
-    enum class [[=fmt::as_underlying]] color { red = 1, green = 2, blue = 4 };
+    enum class [[=tfmt::as_underlying]] color { red = 1, green = 2, blue = 4 };
 
-    fmt::print("{:04x}", color::blue);
+    tfmt::print("{:04x}", color::blue);
     // Output: 0004
 
 Such an enum is mapped to its underlying type before type erasure, so it can
-also be used as dynamic width or precision. Unlike `fmt::as_identifiers`, it
+also be used as dynamic width or precision. Unlike `tfmt::as_identifiers`, it
 works with all character types. The two annotations specify different
 representations and cannot be combined.
 
@@ -606,10 +606,10 @@ This uses two C++26 features:
 [reflection](https://en.cppreference.com/w/cpp/language/operator_reflection) to
 retrieve the enumerator identifiers and
 [annotations](https://en.cppreference.com/w/cpp/language/annotations) to opt an
-enum in via `fmt::as_identifiers`. It therefore requires a compiler with
+enum in via `tfmt::as_identifiers`. It therefore requires a compiler with
 reflection support,
 which may need an extra flag such as `-freflection` in GCC. The macro
-`FMT_USE_REFLECTION` is set to 1 if reflection is available and to 0 otherwise.
+`TFMT_USE_REFLECTION` is set to 1 if reflection is available and to 0 otherwise.
 It can also be defined by the user to disable the use of reflection.
 
 When {fmt} is built as a module, reflection support is detected when the module
@@ -620,9 +620,9 @@ built with reflection enabled.
 ## Compile-Time Support
 
 `fmt/compile.h` provides format string compilation and compile-time
-(`constexpr`) formatting enabled via the `FMT_COMPILE` macro or the `_cf`
-user-defined literal defined in namespace `fmt::literals`. Format strings
-marked with `FMT_COMPILE` or `_cf` are parsed, checked and converted into
+(`constexpr`) formatting enabled via the `TFMT_COMPILE` macro or the `_cf`
+user-defined literal defined in namespace `tfmt::literals`. Format strings
+marked with `TFMT_COMPILE` or `_cf` are parsed, checked and converted into
 efficient formatting code at compile-time. This supports arguments of built-in
 and string types as well as user-defined types with `format` methods taking
 the format context type as a template parameter in their `formatter`
@@ -633,7 +633,7 @@ specializations. For example ([run](https://www.godbolt.org/z/3c13erEoq)):
       double y;
     };
 
-    template <> struct fmt::formatter<point> {
+    template <> struct tfmt::formatter<point> {
       constexpr auto parse(format_parse_context& ctx) { return ctx.begin(); }
 
       template <typename FormatContext>
@@ -642,8 +642,8 @@ specializations. For example ([run](https://www.godbolt.org/z/3c13erEoq)):
       }
     };
 
-    using namespace fmt::literals;
-    std::string s = fmt::format("{}"_cf, point(4, 2));
+    using namespace tfmt::literals;
+    std::string s = tfmt::format("{}"_cf, point(4, 2));
 
 Format string compilation can generate more binary code compared to the
 default API and is only recommended in places where formatting is a
@@ -651,12 +651,12 @@ performance bottleneck.
 
 The same APIs support formatting at compile time e.g. in `constexpr`
 and `consteval` functions. Additionally there is an experimental
-`FMT_STATIC_FORMAT` that allows formatting into a string of the exact
+`TFMT_STATIC_FORMAT` that allows formatting into a string of the exact
 required size at compile time. Compile-time formatting works with built-in
 and user-defined formatters that have `constexpr` `format` methods.
 Example:
 
-    template <> struct fmt::formatter<point> {
+    template <> struct tfmt::formatter<point> {
       constexpr auto parse(format_parse_context& ctx) { return ctx.begin(); }
 
       template <typename FormatContext>
@@ -665,14 +665,14 @@ Example:
       }
     };
 
-    constexpr auto s = FMT_STATIC_FORMAT("{}", point(4, 2));
+    constexpr auto s = TFMT_STATIC_FORMAT("{}", point(4, 2));
     const char* cstr = s.c_str(); // Points the static string "(4, 2)".
 
 ::: operator""_cf
 
-::: FMT_COMPILE
+::: TFMT_COMPILE
 
-::: FMT_STATIC_FORMAT
+::: TFMT_STATIC_FORMAT
 
 <a id="color-api"></a>
 ## Terminal Colors and Text Styles
@@ -715,9 +715,9 @@ you should provide a `formatter` specialization inherited from
       }
     };
 
-    template <> struct fmt::formatter<date> : ostream_formatter {};
+    template <> struct tfmt::formatter<date> : ostream_formatter {};
 
-    std::string s = fmt::format("The date is {}", date{2012, 12, 9});
+    std::string s = tfmt::format("The date is {}", date{2012, 12, 9});
     // s == "The date is 2012-12-9"
 
 ::: streamed(const T&)
@@ -783,36 +783,36 @@ following differences:
 
 {fmt} provides configuration via CMake options and preprocessor macros to
 enable or disable features and to optimize for binary size. For example, you
-can disable OS-specific APIs defined in `fmt/os.h` with `-DFMT_OS=OFF` when
+can disable OS-specific APIs defined in `fmt/os.h` with `-DTFMT_OS=OFF` when
 configuring CMake.
 
 ### CMake Options
 
-- **`FMT_OS`**: When set to `OFF`, disables OS-specific APIs (`fmt/os.h`).
-- **`FMT_UNICODE`**: When set to `OFF`, disables Unicode support on
+- **`TFMT_OS`**: When set to `OFF`, disables OS-specific APIs (`fmt/os.h`).
+- **`TFMT_UNICODE`**: When set to `OFF`, disables Unicode support on
   Windows/MSVC. Unicode support is always enabled on other platforms.
 
 ### Macros
 
-- **`FMT_HEADER_ONLY`**: Enables the header-only mode when defined. It is an
-  alternative to using the `fmt::fmt-header-only` CMake target.
+- **`TFMT_HEADER_ONLY`**: Enables the header-only mode when defined. It is an
+  alternative to using the `tfmt::fmt-header-only` CMake target.
   Default: not defined.
 
-- **`FMT_USE_EXCEPTIONS`**: Disables the use of exceptions when set to `0`.
+- **`TFMT_USE_EXCEPTIONS`**: Disables the use of exceptions when set to `0`.
   Default: `1` (`0` if compiled with `-fno-exceptions`).
 
-- **`FMT_USE_LOCALE`**: When set to `0`, disables locale support.
-  Default: `1` (`0` when `FMT_OPTIMIZE_SIZE > 1`).
+- **`TFMT_USE_LOCALE`**: When set to `0`, disables locale support.
+  Default: `1` (`0` when `TFMT_OPTIMIZE_SIZE > 1`).
 
-- **`FMT_CUSTOM_ASSERT_FAIL`**: When set to `1`, allows users to provide a
-  custom `fmt::assert_fail` function which is called on assertion failures and,
+- **`TFMT_CUSTOM_ASSERT_FAIL`**: When set to `1`, allows users to provide a
+  custom `tfmt::assert_fail` function which is called on assertion failures and,
   if exceptions are disabled, on runtime errors. Default: `0`.
 
-- **`FMT_BUILTIN_TYPES`**: When set to `0`, disables built-in handling of
+- **`TFMT_BUILTIN_TYPES`**: When set to `0`, disables built-in handling of
   arithmetic and string types other than `int`. This reduces library size at
   the cost of per-call overhead. Default: `1`.
 
-- **`FMT_OPTIMIZE_SIZE`**: Controls binary size optimizations:
+- **`TFMT_OPTIMIZE_SIZE`**: Controls binary size optimizations:
     - `0` - off (default)
     - `1` - applies some optimizations
     - `2` - disables locale support by default, some Unicode features, and
@@ -824,7 +824,7 @@ To minimize the binary footprint of {fmt} as much as possible at the cost of
 some features, you can use the following configuration:
 
 - CMake options:
-    - `FMT_OS=OFF`
+    - `TFMT_OS=OFF`
 - Macros:
-    - `FMT_BUILTIN_TYPES=0`
-    - `FMT_OPTIMIZE_SIZE=2`
+    - `TFMT_BUILTIN_TYPES=0`
+    - `TFMT_OPTIMIZE_SIZE=2`

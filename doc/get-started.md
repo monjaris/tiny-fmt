@@ -8,9 +8,9 @@ with CMake, while the [Build Systems](#build-systems) section covers the rest.
 
 ## CMake
 
-{fmt} provides CMake targets: `fmt::fmt` for the standard compiled library,
-`fmt::fmt-header-only` for the header-only library, and optionally
-`fmt::fmt-module` for the C++ module library when the `FMT_MODULE` option is
+{fmt} provides CMake targets: `tfmt::fmt` for the standard compiled library,
+`tfmt::fmt-header-only` for the header-only library, and optionally
+`tfmt::fmt-module` for the C++ module library when the `TFMT_MODULE` option is
 enabled. It is recommended to use the compiled library or the module library for
 improved build times. 
 
@@ -28,43 +28,43 @@ There are three primary ways to use {fmt} with CMake:
           GIT_TAG        e69e5f977d458f2650bb346dadf2ad30c5320281) # 10.2.1
         FetchContent_MakeAvailable(fmt)
 
-        target_link_libraries(<your-target> fmt::fmt)
+        target_link_libraries(<your-target> tfmt::fmt)
 
 * **Installed**: You can find and use an [installed](#installation) version of
   {fmt} in your `CMakeLists.txt` file as follows:
 
         find_package(fmt)
-        target_link_libraries(<your-target> fmt::fmt)
+        target_link_libraries(<your-target> tfmt::fmt)
 
 * **Embedded**: You can add the {fmt} source tree to your project and include it
   in your `CMakeLists.txt` file:
 
         add_subdirectory(fmt)
-        target_link_libraries(<your-target> fmt::fmt)
+        target_link_libraries(<your-target> tfmt::fmt)
 
 ### Alternative Targets
 
 In order to use the header-only target or the module target, simply substitute the
-`fmt::fmt` in the above steps with `fmt::fmt-header-only` or `fmt::fmt-module` 
+`tfmt::fmt` in the above steps with `tfmt::fmt-header-only` or `tfmt::fmt-module` 
 accordingly.
 
 ### Using the C++20 Module
 
-The `fmt::fmt-module` target is only available when the `FMT_MODULE` CMake
-option is enabled. Enable it by passing `-DFMT_MODULE=ON` when configuring your
+The `tfmt::fmt-module` target is only available when the `TFMT_MODULE` CMake
+option is enabled. Enable it by passing `-DTFMT_MODULE=ON` when configuring your
 project before adding {fmt}, or set `CMAKE_CXX_STANDARD` to at least 20 before
 adding {fmt} which will enable module support automatically when supported by
 the toolchain.
 
-Link your target to `fmt::fmt-module` and import `fmt` instead of including a
+Link your target to `tfmt::fmt-module` and import `fmt` instead of including a
 {fmt} header:
 
-    target_link_libraries(<your-target> PRIVATE fmt::fmt-module)
+    target_link_libraries(<your-target> PRIVATE tfmt::fmt-module)
 
     import fmt;
 
     int main() {
-      fmt::print("Hello, world!\n");
+      tfmt::print("Hello, world!\n");
     }
 
 When using CMake's native C++ module support, you need CMake 3.28 or newer,
@@ -125,7 +125,7 @@ please create an issue or pull request on the Conan Center Index repository. -->
 [clang-tidy](https://clang.llvm.org/extra/clang-tidy/) v18 provides the
 [modernize-use-std-print](https://clang.llvm.org/extra/clang-tidy/checks/modernize/use-std-print.html)
 check that is capable of converting occurrences of `printf` and
-`fprintf` to `fmt::print` if configured to do so. (By default it
+`fprintf` to `tfmt::print` if configured to do so. (By default it
 converts to `std::print`.)
 
 ## Building from Source
@@ -145,7 +145,7 @@ current directory. Now you can build the library by running `make`.
 
 Once the library has been built you can invoke `make test` to run the tests.
 
-You can control generation of the make `test` target with the `FMT_TEST`
+You can control generation of the make `test` target with the `TFMT_TEST`
 CMake option. This can be useful if you include fmt as a subdirectory in
 your project but don't want to add fmt's tests to your `test` target.
 

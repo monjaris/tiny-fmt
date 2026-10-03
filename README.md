@@ -1,35 +1,7 @@
 <img src="https://user-images.githubusercontent.com/576385/156254208-f5b743a9-88cf-439d-b0c0-923d53e8d551.png" alt="{fmt}" width="25%"/>
 
-[![image](https://github.com/fmtlib/fmt/actions/workflows/linux.yml/badge.svg?branch=master)](
-https://github.com/fmtlib/fmt/actions?query=workflow%3Alinux)
-[![image](https://github.com/fmtlib/fmt/actions/workflows/macos.yml/badge.svg?branch=master)](
-https://github.com/fmtlib/fmt/actions?query=workflow%3Amacos)
-[![image](https://github.com/fmtlib/fmt/actions/workflows/windows.yml/badge.svg?branch=master)](
-https://github.com/fmtlib/fmt/actions?query=workflow%3Awindows)
-[![fmt is continuously fuzzed at oss-fuzz](https://oss-fuzz-build-logs.storage.googleapis.com/badges/fmt.svg)](
-https://issues.oss-fuzz.com/issues?q=title:fmt%20cc:victor.zverovich@gmail.com)
-[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/8880/badge)](
-https://www.bestpractices.dev/projects/8880)
-[![image](https://api.securityscorecards.dev/projects/github.com/fmtlib/fmt/badge)](
-https://securityscorecards.dev/viewer/?uri=github.com/fmtlib/fmt)
-[![Ask questions at StackOverflow with the tag fmt](
-https://img.shields.io/badge/stackoverflow-fmt-blue.svg)](https://stackoverflow.com/questions/tagged/fmt)
-[![Support Ukraine](
-https://img.shields.io/badge/Support-Ukraine-005BBB?labelColor=FFD500)](https://novaukraine.org/)
 
-**{fmt}** is an open-source formatting library providing a fast and safe
-alternative to C stdio and C++ iostreams.
-
-[Documentation](https://fmt.dev)
-
-[Cheat Sheets](https://hackingcpp.com/cpp/libs/fmt.html)
-
-Q&A: ask questions on [StackOverflow with the tag
-fmt](https://stackoverflow.com/questions/tagged/fmt).
-
-Try {fmt} in [Compiler Explorer](https://godbolt.org/z/8Mx1EW73v).
-
-[![Live demo by Demoshell](https://build.demoshell.com/v1/embed/badge.svg)](https://build.demoshell.com/launch?snapshot=demoshell%2Ftools%3Afmt)
+**{fmt-lite}** is an open-source fork of {fmt} library, stripping heavy features into core utilities.
 
 # Features
 
@@ -55,13 +27,6 @@ Try {fmt} in [Compiler Explorer](https://godbolt.org/z/8Mx1EW73v).
   `to_chars`, see [Speed tests](#speed-tests) and [Converting a
   hundred million integers to strings per
   second](https://vitaut.net/posts/2020/fast-int-to-string-revisited/)
-- Small code size both in terms of source code with the minimum
-  configuration consisting of just three files, `core.h`, `format.h`
-  and `format-inl.h`, and compiled code; see [Compile time and code
-  bloat](#compile-time-and-code-bloat)
-- Reliability: the library has an extensive set of
-  [tests](https://github.com/fmtlib/fmt/tree/master/test) and is
-  [continuously fuzzed](https://bugs.chromium.org/p/oss-fuzz/issues/list?colspec=ID%20Type%20Component%20Status%20Proj%20Reported%20Owner%20Summary&q=proj%3Dfmt&can=1)
 - Safety: the library is fully type-safe, errors in format strings can
   be reported at compile time, automatic memory management prevents
   buffer overflow errors
@@ -73,8 +38,6 @@ Try {fmt} in [Compiler Explorer](https://godbolt.org/z/8Mx1EW73v).
 - Clean warning-free codebase even on high warning levels such as
   `-Wall -Wextra -pedantic`
 - Locale independence by default
-- Optional header-only configuration enabled with the
-  `FMT_HEADER_ONLY` macro
 
 See the [documentation](https://fmt.dev) for more details.
 
@@ -83,17 +46,17 @@ See the [documentation](https://fmt.dev) for more details.
 **Print to stdout** ([run](https://godbolt.org/z/Tevcjh))
 
 ``` c++
-#include <fmt/core.h>
+#include <tiny-fmt/tfmt.hpp>
 
 int main() {
-  fmt::print("Hello, world!\n");
+  tfmt::print("Hello, world!\n");
 }
 ```
 
 **Format a string** ([run](https://godbolt.org/z/oK8h33))
 
 ``` c++
-std::string s = fmt::format("The answer is {}.", 42);
+std::string s = tfmt::format("The answer is {}.", 42);
 // s == "The answer is 42."
 ```
 
@@ -101,7 +64,7 @@ std::string s = fmt::format("The answer is {}.", 42);
 ([run](https://godbolt.org/z/Yn7Txe))
 
 ``` c++
-std::string s = fmt::format("I'd rather be {1} than {0}.", "right", "happy");
+std::string s = tfmt::format("I'd rather be {1} than {0}.", "right", "happy");
 // s == "I'd rather be happy than right."
 ```
 
@@ -112,8 +75,8 @@ std::string s = fmt::format("I'd rather be {1} than {0}.", "right", "happy");
 
 int main() {
   auto now = std::chrono::system_clock::now();
-  fmt::print("Date and time: {}\n", now);
-  fmt::print("Time: {:%H:%M}\n", now);
+  tfmt::print("Date and time: {}\n", now);
+  tfmt::print("Time: {:%H:%M}\n", now);
 }
 ```
 
@@ -130,7 +93,7 @@ Output:
 
 int main() {
   std::vector<int> v = {1, 2, 3};
-  fmt::print("{}\n", v);
+  tfmt::print("{}\n", v);
 }
 ```
 
@@ -141,7 +104,7 @@ Output:
 **Check a format string at compile time**
 
 ``` c++
-std::string s = fmt::format("{:d}", "I am not a number");
+std::string s = tfmt::format("{:d}", "I am not a number");
 ```
 
 This gives a compile-time error in C++20 because `d` is an invalid
@@ -153,7 +116,7 @@ format specifier for a string.
 #include <fmt/os.h>
 
 int main() {
-  auto out = fmt::output_file("guide.txt");
+  auto out = tfmt::output_file("guide.txt");
   out.print("Don't {}", "Panic");
 }
 ```
@@ -167,11 +130,11 @@ https://vitaut.net/posts/2020/optimal-file-buffer-size/).
 #include <fmt/color.h>
 
 int main() {
-  fmt::print(fg(fmt::color::crimson) | fmt::emphasis::bold,
+  tfmt::print(fg(tfmt::color::crimson) | tfmt::emphasis::bold,
              "Hello, {}!\n", "world");
-  fmt::print(fg(fmt::color::floral_white) | bg(fmt::color::slate_gray) |
-             fmt::emphasis::underline, "Olá, {}!\n", "Mundo");
-  fmt::print(fg(fmt::color::steel_blue) | fmt::emphasis::italic,
+  tfmt::print(fg(tfmt::color::floral_white) | bg(tfmt::color::slate_gray) |
+             tfmt::emphasis::underline, "Olá, {}!\n", "Mundo");
+  tfmt::print(fg(tfmt::color::steel_blue) | tfmt::emphasis::italic,
              "你好{}！\n", "世界");
 }
 ```

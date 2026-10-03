@@ -14,6 +14,6 @@ else
     copy_bin="$debug_bin"
 fi
 
-xmake build -j$(nproc) -v "${PROJ}" || exit $?
+xmake build -j$(nproc) "${PROJ}" || exit $?
 command cp "$copy_bin" ./"${PROJ}"
 ./"${PROJ}" "$@"

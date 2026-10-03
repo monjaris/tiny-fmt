@@ -51,8 +51,8 @@ android {
             cmake {
                 arguments "-DANDROID_STL=c++_shared"    // Specify Android STL
                 arguments "-DBUILD_SHARED_LIBS=true"    // Build shared object
-                arguments "-DFMT_TEST=false"            // Skip test
-                arguments "-DFMT_DOC=false"             // Skip documentation
+                arguments "-DTFMT_TEST=false"            // Skip test
+                arguments "-DTFMT_DOC=false"             // Skip documentation
                 cppFlags  "-std=c++17"
                 targets   "fmt"
             }
