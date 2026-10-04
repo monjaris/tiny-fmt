@@ -1,14 +1,6 @@
 #include <cstdlib>
 #include "tinyfmt/tfmt.hpp"
 
-struct testring {
-    const char* data = "salam";
-    const char* begin() const { return data; }
-    const char* begin() { return data; }
-    const char* end() const { return data + 5; }
-    const char* end() { return data + 5; }
-};
-
 int main()
 {
     char buffer[120];
