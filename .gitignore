@@ -3,6 +3,7 @@
 /build/
 
 /main
+/format
 *.out
 *.a
 *.so*
