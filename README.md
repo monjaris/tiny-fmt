@@ -2,6 +2,7 @@
 
 
 **{fmt-lite}** is an open-source fork of {fmt} library, stripping heavy features into core utilities.
+NOTE: header-only mode is deliberatly not supported
 
 # Features
 
