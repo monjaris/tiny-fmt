@@ -1,7 +1,7 @@
 <img src="https://user-images.githubusercontent.com/576385/156254208-f5b743a9-88cf-439d-b0c0-923d53e8d551.png" alt="{fmt}" width="25%"/>
 
 
-**{fmt-lite}** is an open-source fork of {fmt} library, stripping heavy features into core utilities.
+**{tiny-fmt}** is an open-source fork of {fmt} library, stripping heavy features into core utilities.
 NOTE: header-only mode is deliberatly not supported
 
 # Features
@@ -47,7 +47,7 @@ See the [documentation](https://fmt.dev) for more details.
 **Print to stdout** ([run](https://godbolt.org/z/Tevcjh))
 
 ``` c++
-#include <tiny-fmt/tfmt.hpp>
+#include <tinyfmt/tfmt.hpp>
 
 int main() {
   tfmt::println("Hello, World!");
@@ -74,7 +74,7 @@ std::string s = tfmt::format("I'd rather be {1} than {0}.", "light-weight", "fea
 
 ``` c++
 #include <vector>
-#include <tiny-fmt/tfmt.hpp>
+#include <tinyfmt/tfmt.hpp>
 
 int main() {
   std::vector<int> v = {1, 2, 3};
@@ -102,7 +102,7 @@ https://vitaut.net/posts/2020/optimal-file-buffer-size/).
 **Print with colors and text styles**
 
 ``` c++
-#include <tiny-fmt/colors.hpp>
+#include <tinyfmt/colors.hpp>
 
 int main() {
   tfmt::print(fg(tfmt::color::crimson) | tfmt::emphasis::bold,
