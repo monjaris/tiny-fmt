@@ -1,3 +1,4 @@
+#include <string>
 #include "tinyfmt/tfmt.hpp"
 
 int main()

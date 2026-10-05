@@ -25,8 +25,7 @@ extern "C" void __tsan_release(void*);
 #  include <io.h>  // _isatty
 #endif
 
-// #include "format.hpp"
-#include "../tfmt.hpp"
+#include "format.hpp"
 
 #if FMT_USE_LOCALE && !defined(FMT_MODULE)
 #  include <locale>
@@ -1461,6 +1460,13 @@ FMT_FUNC auto vformat(string_view fmt, format_args args) -> std::string {
   // can be better optimized in tfmt::tfmt::format anyway.
   auto buffer = memory_buffer();
   detail::vformat_to(buffer, fmt, args);
+  return to_string(buffer);
+}
+
+FMT_FUNC auto vformat(locale_ref loc, string_view fmt, format_args args)
+    -> std::string {
+  auto buffer = memory_buffer();
+  detail::vformat_to(buffer, fmt, args, loc);
   return to_string(buffer);
 }
 
