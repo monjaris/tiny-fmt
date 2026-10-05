@@ -25,7 +25,8 @@ extern "C" void __tsan_release(void*);
 #  include <io.h>  // _isatty
 #endif
 
-#include "format.hpp"
+// #include "format.hpp"
+#include "../tfmt.hpp"
 
 #if FMT_USE_LOCALE && !defined(FMT_MODULE)
 #  include <locale>

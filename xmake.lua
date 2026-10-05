@@ -66,3 +66,4 @@ target("tiny-fmt")
 --- TESTS
 target("main") add_files("test/main.cpp") add_deps("tiny-fmt")
 target("format") add_files("test/format.cpp") add_deps("tiny-fmt")
+target("format_to") add_files("test/format_to.cpp") add_deps("tiny-fmt")

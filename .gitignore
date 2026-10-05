@@ -4,6 +4,7 @@
 
 /main
 /format
+/format_to
 *.out
 *.a
 *.so*
