@@ -1,4 +1,4 @@
-#include <cstdlib>
+#include <cstdlib>  // for ::exit()
 #include "tinyfmt/tfmt.hpp"
 
 int main()
