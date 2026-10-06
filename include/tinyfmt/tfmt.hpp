@@ -2903,14 +2903,14 @@ struct format_to_result {
 };
 
 template <size_t N>
-TFMT_DEPRECATED auto vformat_to(char (&out)[N], string_view fmt,
+TFMT_NODISCARD TFMT_DEPRECATED auto vformat_to(char (&out)[N], string_view fmt,
                                format_args args) -> format_to_result {
   auto result = vformat_to_n(out, N, fmt, args);
   return {result.out, result.size > N};
 }
 
 template <size_t N, typename... T>
-TFMT_INLINE auto format_to(char (&out)[N], format_string<T...> fmt, T&&... args)
+TFMT_NODISCARD TFMT_INLINE auto format_to(char (&out)[N], format_string<T...> fmt, T&&... args)
     -> format_to_result {
   auto result = vformat_to_n(out, N, fmt.str, vargs<T...>{{args...}});
   return {result.out, result.size > N};
