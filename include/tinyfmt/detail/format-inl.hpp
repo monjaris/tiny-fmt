@@ -1455,15 +1455,15 @@ FMT_FUNC void report_system_error(int error_code,
   do_report_error(format_system_error, error_code, message);
 }
 
-FMT_FUNC auto vformat(string_view fmt, format_args args) -> std::string {
+FMT_FUNC TFMT_NODISCARD auto vformat(string_view fmt, format_args args) -> std::string {
   // Don't optimize the "{}" case to keep the binary size small and because it
-  // can be better optimized in tfmt::tfmt::format anyway.
+  // can be better optimized in tfmt::format anyway.
   auto buffer = memory_buffer();
   detail::vformat_to(buffer, fmt, args);
   return to_string(buffer);
 }
 
-FMT_FUNC auto vformat(locale_ref loc, string_view fmt, format_args args)
+FMT_FUNC TFMT_NODISCARD auto vformat(locale_ref loc, string_view fmt, format_args args)
     -> std::string {
   auto buffer = memory_buffer();
   detail::vformat_to(buffer, fmt, args, loc);
@@ -1600,7 +1600,7 @@ template <typename F> class apple_file : public file_base<F> {
  public:
   using file_base<F>::file_base;
 
-  auto is_buffered() const -> bool {
+  TFMT_NODISCARD auto is_buffered() const -> bool {
     return (this->file_->_flags & unbuffered) == 0;
   }
 
