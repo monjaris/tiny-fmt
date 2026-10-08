@@ -1,7 +1,4 @@
-<img src="https://user-images.githubusercontent.com/576385/156254208-f5b743a9-88cf-439d-b0c0-923d53e8d551.png" alt="{fmt}" width="25%"/>
-
-
-**{tiny-fmt}** is an open-source fork of {fmt} library, stripping heavy features into core utilities.
+**tiny-fmt** is an open-source fork of {fmt} library, stripping heavy features into core utilities.
 NOTE: header-only mode is deliberatly not supported
 
 # Features
@@ -33,7 +30,7 @@ NOTE: header-only mode is deliberatly not supported
   buffer overflow errors
 - Ease of use: small self-contained code base, no external
   dependencies, permissive MIT
-  [license](https://github.com/fmtlib/fmt/blob/master/LICENSE)
+  [license](https://github.com/monjaris/tiny-fmt/blob/master/LICENSE)
 - [Portability](https://fmt.dev/latest/#portability) with
   consistent output across platforms and support for older compilers
 - Clean warning-free codebase even on high warning levels such as
