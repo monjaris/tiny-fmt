@@ -19,8 +19,7 @@ set_languages("c++23")
 
 local cxx_flags = {
     optimize,
-    "-Wall", "-Wextra", "-Wshadow", "-Wundef",
-    "-Wcast-align", "-Wdouble-promotion",
+    "-Wall", "-Wextra",
     emit_stack,
     "-fno-exceptions", "-fno-rtti",
 }
@@ -38,4 +37,8 @@ target("tiny-fmt")
 
     if is_kind("shared") then
         add_defines("TFMT_SHARED")
+    end
+
+    if is_plat("windows") then
+        add_cxxflags("/utf-8")
     end
