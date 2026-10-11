@@ -1729,16 +1729,16 @@ class format_string_checker {
 
  public:
   template <typename... T>
-  TFMT_CONSTEXPR explicit format_string_checker(basic_string_view<Char> fmt,
-                                               arg_pack<T...>)
-      : types_{mapped_type_constant<T, Char>::value...},
-        named_args_{},
-        context_(fmt, NUM_ARGS, types_),
-        parse_funcs_{&invoke_parse<T, Char>...} {
+  TFMT_CONSTEXPR explicit format_string_checker(basic_string_view<Char> fmt, arg_pack<T...>)
+    :
+        types_{mapped_type_constant<T, Char>::value...}, named_args_{},
+        context_(fmt, NUM_ARGS, types_), parse_funcs_{&invoke_parse<T, Char>...}
+  {
     int arg_index = 0, named_arg_index = 0;
+
     TFMT_APPLY_VARIADIC(
         init_static_named_arg<T>(named_args_, arg_index, named_arg_index));
-    // ignore_unused(arg_index, named_arg_index);
+    ignore_unused(arg_index, named_arg_index);
   }
 
   TFMT_CONSTEXPR void on_text(const Char*, const Char*) {}
