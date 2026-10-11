@@ -2,25 +2,17 @@ add_rules("mode.debug", "mode.release")
 add_rules("plugin.compile_commands.autoupdate")
 
 
-if is_mode("debug") then
-    optimize = "-O0"
-    emit_stack = "-fno-omit-frame-pointer"
-elseif is_mode("release") then
-    optimize = "-O3"
-    emit_stack = ""
+if is_mode("release") then
     set_policy("build.optimization.lto", true)
 end
 
 
 --- CONFIG
-local cxx_flags = {
-    optimize,
+add_cxxflags(table.unpack({
+    "-std=c++23",
     "-Wall", "-Wextra",
-    emit_stack,
     "-fno-exceptions", "-fno-rtti",
-}
-set_languages("c++23")
-add_cxxflags(table.unpack(cxx_flags))
+}))
 
 
 
@@ -38,12 +30,13 @@ target("tiny-fmt")
 
     if is_kind("shared") then
         add_defines("TFMT_SHARED")
-    elseif is_kind("static") then
-    after_build(function (target)
-        local targetfile = target:targetfile()
-        local sofile = targetfile:match("^(.*)%.[^.]+$") .. ".so"
-        os.rm(sofile)
-    end)    end
+    else
+        after_build(function (target)
+            local targetfile = target:targetfile()
+            local so_file = targetfile:match("^(.*)%.[^.]+$") .. ".so"
+            os.rm(so_file)
+        end)
+    end
 
     if is_plat("windows") then
         add_cxxflags("/utf-8")
