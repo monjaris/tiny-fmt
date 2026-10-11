@@ -33,7 +33,7 @@ target("tiny-fmt")
     else
         after_build(function (target)
             local targetfile = target:targetfile()
-            local so_file = targetfile:match("^(.*)%.[^.]+$") .. ".so"
+            local so_file = targetfile:match("^(.*)%.[^.]+$")..".so"
             os.rm(so_file)
         end)
     end
