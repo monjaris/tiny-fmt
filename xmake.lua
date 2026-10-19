@@ -2,15 +2,6 @@ add_rules("mode.debug", "mode.release")
 add_rules("plugin.compile_commands.autoupdate")
 
 
-option("lto")
-    set_default(false)
-option_end()
-
-if has_config("lto") then
-    set_policy("build.optimization.lto", true)
-end
-
-
 --- CONFIG
 add_cxxflags(table.unpack({
     "-std=c++23",
