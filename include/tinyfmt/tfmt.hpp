@@ -3044,7 +3044,7 @@ size_t formatted_size(
 
 TFMT_END_EXPORT
 TFMT_END_NAMESPACE
-#ifdef FMT_HEADER_ONLY
+#ifdef TFMT_HEADER_ONLY
 #  define FMT_FUNC inline
 #  include "format-inl.hpp"
 #endif
