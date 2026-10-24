@@ -29,13 +29,11 @@
   source code, you may redistribute such embedded portions in such object form
   without including the above copyright and permission notices.
  */
-
-#ifndef FMT_FORMAT_H_
-#define FMT_FORMAT_H_
+#pragma once
 
 #ifndef _LIBCPP_REMOVE_TRANSITIVE_INCLUDES
 #  define _LIBCPP_REMOVE_TRANSITIVE_INCLUDES
-#  define FMT_REMOVE_TRANSITIVE_INCLUDES
+#  define TFMT_REMOVE_TRANSITIVE_INCLUDES
 #endif
 #if defined(TFMT_IMPORT_STD) && !defined(TFMT_MODULE)
 #  define TFMT_MODULE
@@ -3052,7 +3050,7 @@ TFMT_END_NAMESPACE
 #endif
 
 // Restore _LIBCPP_REMOVE_TRANSITIVE_INCLUDES.
-#ifdef FMT_REMOVE_TRANSITIVE_INCLUDES
+#ifdef TFMT_REMOVE_TRANSITIVE_INCLUDES
 #  undef _LIBCPP_REMOVE_TRANSITIVE_INCLUDES
 #endif
 

@@ -3,11 +3,11 @@ add_rules("plugin.compile_commands.autoupdate")
 
 
 --- CONFIG
-add_cxxflags(table.unpack({
+add_cxxflags(
     "-std=c++23",
     "-Wall", "-Wextra",
-    "-fno-exceptions", "-fno-rtti",
-}))
+    "-fno-exceptions", "-fno-rtti"
+)
 
 
 

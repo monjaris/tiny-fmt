@@ -15,7 +15,6 @@
 
 #include "../tfmt.hpp"
 
-// Map the original FMT_* macro names to their TFMT_* equivalents.
 #include "core.hpp"
 
 // libc++ supports string_view in pre-c++17.

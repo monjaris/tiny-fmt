@@ -1,5 +1,4 @@
 **tiny-fmt** is an open-source fork of {fmt} library, stripping heavy features into core utilities.
-NOTE: header-only mode is deliberatly not supported
 
 # Features
 
@@ -125,5 +124,5 @@ magnitude slower than the other methods.
 
 
 # Projects already using tfmt
-*vexa* - https://github.com/monjaris/vexa
+*vexa* - https://github.com/monjaris/vexa \
 *gshell* - https://github.com/gosti37/gshell

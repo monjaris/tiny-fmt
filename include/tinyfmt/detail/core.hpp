@@ -10,8 +10,7 @@
 // macro names (FMT_*) working for the un-renamed headers in this
 // directory (format-inl.hpp) so that there is only one copy
 // of the core API in the codebase.
-#ifndef FMT_CORE_H_
-#define FMT_CORE_H_
+#pragma once
 
 // Map the original FMT_* macro names to their TFMT_* equivalents.
 // These must be defined before including ../tfmt.hpp because its
@@ -71,5 +70,3 @@
 #define FMT_VERSION TFMT_VERSION
 #define FMT_VISIBILITY(value) TFMT_VISIBILITY(value)
 #define FMT_WIN32 TFMT_WIN32
-
-#endif  // FMT_CORE_H_
