@@ -125,4 +125,5 @@ magnitude slower than the other methods.
 
 # Projects already using tfmt
 *vexa* - https://github.com/monjaris/vexa \
-*gshell* - https://github.com/gosti37/gshell
+*gshell* - https://github.com/gosti37/gshell \
+*timeh* - https://github.com/monjaris/timeh
