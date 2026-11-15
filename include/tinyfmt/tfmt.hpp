@@ -43,6 +43,7 @@
 #  include <limits.h>  // CHAR_BIT
 #  include <stdio.h>   // FILE
 #  include <string.h>  // memcmp
+#  include <cstddef>  // std::ptrdiff_t
 
 #  include <type_traits>  // std::enable_if
 #endif
