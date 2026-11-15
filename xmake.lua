@@ -1,4 +1,5 @@
 add_rules("mode.debug", "mode.release")
+set_defaultmode("debug")
 add_rules("plugin.compile_commands.autoupdate")
 
 
